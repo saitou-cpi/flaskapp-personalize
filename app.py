@@ -2,7 +2,6 @@ from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 import boto3
 
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///fruits.db'
 db = SQLAlchemy(app)
@@ -16,22 +15,25 @@ class Fruit(db.Model):
     def __repr__(self):
         return '<Fruit %r>' % self.name
 
-def init_db():
+with app.app_context():
     db.create_all()
+    # 初期フルーツデータの追加
+    init_fruits(db)
+
+def init_fruits(db):
     fruits = ['Apple', 'Banana', 'Orange', 'Strawberry', 'Blueberry', 'Mango',
               'Pineapple', 'Watermelon', 'Grapefruit', 'Lemon', 'Lime', 'Cherry',
               'Grape', 'Melon', 'Kiwi', 'Peach', 'Nectarine', 'Papaya', 'Guava',
               'Lingonberry', 'Raspberry', 'Blackberry', 'Apricot', 'Plum',
               'Passion Fruit', 'Avocado', 'Persimmon', 'Pomegranate',
               'Dragon Fruit', 'Fig']  # ここに30種類のフルーツをリストとして追加
-    for fruit_name in fruits:
-        fruit = Fruit(name=fruit_name)
-        db.session.add(fruit)
-    db.session.commit()
+    existing_fruits = Fruit.query.all()
+    if not existing_fruits:
+        for fruit_name in fruits:
+            fruit = Fruit(name=fruit_name)
+            db.session.add(fruit)
+        db.session.commit()
 
-@app.before_first_request
-def create_tables():
-    init_db()
 
 def get_personalize_recommendations(user_id):
     response = personalize_runtime.get_recommendations(
