@@ -15,11 +15,6 @@ class Fruit(db.Model):
     def __repr__(self):
         return '<Fruit %r>' % self.name
 
-with app.app_context():
-    db.create_all()
-    # 初期フルーツデータの追加
-    init_fruits(db)
-
 def init_fruits(db):
     fruits = ['Apple', 'Banana', 'Orange', 'Strawberry', 'Blueberry', 'Mango',
               'Pineapple', 'Watermelon', 'Grapefruit', 'Lemon', 'Lime', 'Cherry',
@@ -34,6 +29,10 @@ def init_fruits(db):
             db.session.add(fruit)
         db.session.commit()
 
+with app.app_context():
+    db.create_all()
+    # 初期フルーツデータの追加
+    init_fruits(db)
 
 def get_personalize_recommendations(user_id):
     response = personalize_runtime.get_recommendations(
