@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///fruits.db'
 db = SQLAlchemy(app)
 
-personalize_runtime = boto3.client('personalize-runtime')
+personalize_runtime = boto3.client('personalize-runtime', region_name='ap-northeast-1')
 
 CAMPAIGN_ARN = "YOUR_PERSONALIZE_CAMPAIGN_ARN"
 
