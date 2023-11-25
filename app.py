@@ -8,7 +8,7 @@ db = SQLAlchemy(app)
 
 personalize_runtime = boto3.client('personalize-runtime', region_name='ap-northeast-1')
 
-CAMPAIGN_ARN = "arn:aws:personalize:ap-northeast-1:538815528650:campaign/saitou-handson-campaign"
+CAMPAIGN_ARN = "YOUR_PERSONALIZE_CAMPAIGN_ARN"
 
 class Fruit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
