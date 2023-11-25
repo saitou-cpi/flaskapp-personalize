@@ -6,7 +6,11 @@
 </head>
 <body>
     <h1>ようこそ、{{ user_id }}さん</h1>
-    <p>あなたへのおすすめのフルーツは{{ fruits[0] }}と{{ fruits[1] }}です。</p>
+    {% if fruits %}
+        <p>あなたへのおすすめのフルーツは{{ fruits[0] }}と{{ fruits[1] }}です。</p>
+    {% else %}
+        <p>おすすめはまだありません。</p>
+    {% endif %}
     <a href="{{ url_for('index') }}">戻る</a>
 </body>
 </html>

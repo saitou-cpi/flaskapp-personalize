@@ -8,6 +8,8 @@ db = SQLAlchemy(app)
 
 personalize_runtime = boto3.client('personalize-runtime', region_name='ap-northeast-1')
 
+CAMPAIGN_ARN = "arn:aws:personalize:ap-northeast-1:538815528650:campaign/saitou-handson-campaign"
+
 class Fruit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
@@ -35,13 +37,16 @@ with app.app_context():
     init_fruits(db)
 
 def get_personalize_recommendations(user_id):
-    response = personalize_runtime.get_recommendations(
-        campaignArn="arn:aws:personalize:ap-northeast-1:538815528650:campaign/saitou-handson-campaign",
-        userId=str(user_id)
-    )
-    item_ids = [int(item['itemId']) for item in response['itemList']]
-    return item_ids
-
+    try:
+        response = personalize_runtime.get_recommendations(
+            campaignArn=CAMPAIGN_ARN,
+            userId=str(user_id)
+        )
+        item_ids = [int(item['itemId']) for item in response['itemList']]
+        return item_ids
+    except Exception as e:
+        print(f"Error getting recommendations: {e}")
+        return []  # おすすめ情報が取得できない場合は空のリストを返す
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
